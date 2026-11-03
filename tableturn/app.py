@@ -1,6 +1,6 @@
 from contextlib import asynccontextmanager
 from pathlib import Path
-
+from .routers import parties, seatings, tables, waitlist
 from fastapi import FastAPI
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
@@ -31,7 +31,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
     app.state.sessionmaker = make_sessionmaker(engine)
 
     install_handlers(app)
-    for r in (tables.router, waitlist.router, parties.router):
+    for r in (tables.router, waitlist.router, seatings.router, parties.router):
         app.include_router(r)
 
     app.mount("/static", StaticFiles(directory=STATIC), name="static")
