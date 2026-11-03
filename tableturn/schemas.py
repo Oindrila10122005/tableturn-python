@@ -56,3 +56,24 @@ class PartyOut(BaseModel):
     state: PartyState
     position: int
     joined_at: UtcZ
+
+class JoinOut(BaseModel):
+    party_id: str
+    name: str
+    covers: int
+    position: int
+    joined_at: UtcZ
+    quoted_minutes: int
+    quoted_at: UtcZ
+
+
+class PartyOut(BaseModel):
+    party_id: str
+    name: str
+    covers: int
+    state: PartyState
+    position: int
+    joined_at: UtcZ
+    quoted_minutes: int
+    quoted_at: UtcZ
+    waited_minutes: int | None = None
