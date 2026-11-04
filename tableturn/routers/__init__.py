@@ -1,3 +1,5 @@
+"""One router per resource. Each door only reads the request and hands it to a rule; sessions, clocks and
+settings arrive as dependencies."""
 from collections.abc import Iterator
 from typing import Annotated
 
