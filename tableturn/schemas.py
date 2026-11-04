@@ -25,7 +25,7 @@ class TableOut(BaseModel):
     section: Section
     state: TableState
     party_id: str | None = None          # seated and uncleared tables: whose table it is
-    seating_id: str | None = None        # seated and uncleared tables
+    seating_id: str | None = None        # seated and uncleared tables: what the floor's Leave / Clear act on
     seated_minutes: int | None = None    # seated tables only
 
 
@@ -47,36 +47,9 @@ class JoinOut(BaseModel):
     covers: int
     position: int
     joined_at: UtcZ
-
-
-class PartyOut(BaseModel):
-    party_id: str
-    name: str
-    covers: int
-    state: PartyState
-    position: int
-    joined_at: UtcZ
-
-class JoinOut(BaseModel):
-    party_id: str
-    name: str
-    covers: int
-    position: int
-    joined_at: UtcZ
     quoted_minutes: int
     quoted_at: UtcZ
 
-
-class PartyOut(BaseModel):
-    party_id: str
-    name: str
-    covers: int
-    state: PartyState
-    position: int
-    joined_at: UtcZ
-    quoted_minutes: int
-    quoted_at: UtcZ
-    waited_minutes: int | None = None
 
 class PartyOut(BaseModel):
     party_id: str
@@ -102,3 +75,15 @@ class SeatOut(BaseModel):
     table: str
     seated_at: UtcZ
     waited_minutes: int
+
+
+class LeaveOut(BaseModel):
+    seating_id: str
+    left_at: UtcZ
+
+
+class ClearOut(BaseModel):
+    seating_id: str
+    table: str
+    turn_minutes: int
+    cleared_at: UtcZ

@@ -1,5 +1,5 @@
 """Branches, tables and parties. A table's state is worked out, never stored: there is no state
-column on tables. The real wait is stamped once and never recomputed.
+column on tables. Turn time and the real wait are stamped once and never recomputed.
 """
 from datetime import datetime
 
@@ -30,6 +30,7 @@ class DiningTable(Base):
     current_seating_id: Mapped[int | None] = mapped_column(Integer, nullable=True)
     cleared_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
 
+
 class Party(Base):
     __tablename__ = "parties"
 
@@ -45,6 +46,7 @@ class Party(Base):
     quoted_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     waited_minutes: Mapped[int | None] = mapped_column(Integer, nullable=True)   # the truth, stamped at seating
 
+
 class Seating(Base):
     __tablename__ = "seatings"
 
@@ -55,4 +57,4 @@ class Seating(Base):
     seated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     left_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
     cleared_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), nullable=True)
-    turn_minutes: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    turn_minutes: Mapped[int | None] = mapped_column(Integer, nullable=True)     # seated_at → left_at
