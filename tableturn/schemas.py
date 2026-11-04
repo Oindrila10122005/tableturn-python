@@ -2,11 +2,12 @@
 from datetime import datetime, timezone
 from typing import Annotated, Literal
 
-from pydantic import BaseModel, Field, PlainSerializer
+from pydantic import BaseModel, ConfigDict, Field, PlainSerializer
 
 Section = Literal["Window", "Garden", "Indoor"]
 TableState = Literal["free", "seated", "uncleared"]
 PartyState = Literal["waiting", "seated", "left", "cleared"]
+EventKind = Literal["joined", "quoted", "seated", "left", "cleared"]
 
 
 def _iso_z(dt: datetime) -> str:
@@ -50,6 +51,17 @@ class JoinOut(BaseModel):
     quoted_minutes: int
     quoted_at: UtcZ
 
+class EventOut(BaseModel):
+    """One timeline row. Every fact an event can carry is declared; each kind carries only its own."""
+    model_config = ConfigDict(extra="forbid")
+
+    at: UtcZ
+    kind: EventKind
+    covers: int | None = None             # joined
+    quoted_minutes: int | None = None     # quoted
+    table: str | None = None              # seated
+    waited_minutes: int | None = None     # seated
+    turn_minutes: int | None = None       # cleared
 
 class PartyOut(BaseModel):
     party_id: str
@@ -62,6 +74,7 @@ class PartyOut(BaseModel):
     quoted_at: UtcZ
     waited_minutes: int | None = None
     table: str | None = None
+    events: list[EventOut]
 
 
 class SeatIn(BaseModel):
