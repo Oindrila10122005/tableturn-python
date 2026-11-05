@@ -20,6 +20,7 @@ def test_already_seated(client):
     r = seat(client, s["party_id"], "T21")
     assert r.status_code == 409 and r.json()["type"] == "/errors/already-seated"
 
+
 def test_table_not_cleared_after_the_party_left(client):
     s = seated(client, 2, "T01")
     assert client.post(f"/seatings/{s['seating_id']}/leave").status_code == 200
@@ -53,6 +54,7 @@ def test_the_404s_and_the_order_of_checks(client):
     r = seat(client, six["party_id"], "T12")           # not cleared AND too small: not-cleared wins
     assert r.status_code == 409 and r.json()["type"] == "/errors/table-not-cleared"
 
+
 def _too_small(client):
     return seat(client, join(client, 6)["party_id"], "T11"), set()
 
@@ -61,7 +63,12 @@ def _too_big(client):
     return client.post("/waitlist", json={"name": "Big", "covers": 9}), {"max_covers"}
 
 
-@pytest.mark.parametrize("make", [_too_small, _too_big], ids=["table-too-small", "party-too-big"])
+def _overtaking(client):
+    join(client, 4)
+    return seat(client, join(client, 2)["party_id"], "T11"), {"must_seat_first"}
+
+
+@pytest.mark.parametrize("make", [_too_small, _too_big, _overtaking], ids=["table-too-small", "party-too-big", "overtaking"])
 def test_refusal_body_has_exactly_the_documented_shape(client, make):
     r, named = make(client)
     assert r.status_code in (400, 409)
@@ -72,7 +79,7 @@ def test_refusal_body_has_exactly_the_documented_shape(client, make):
 
 
 def test_routes_never_build_error_responses():
-    """No route raises, builds an HTTPException (bare or `fastapi.HTTPException`) or builds a JSONResponse."""
+    """No route raises, builds an `HTTPException` (bare or `fastapi.HTTPException`) or builds a `JSONResponse`."""
     for path in (PKG / "routers").glob("*.py"):
         src = path.read_text(encoding="utf-8")
         tree = ast.parse(src)
