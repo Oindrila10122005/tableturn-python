@@ -1,4 +1,5 @@
-"""The app's settings, read from the environment or a .env file."""
+"""The app's settings, read from the environment or a .env file. Nothing is hard-coded; an env-file can feed it.
+Every field here is listed in .env.example."""
 from typing import Literal
 
 from pydantic import Field
